@@ -1,0 +1,32 @@
+==========================SelectAll================================
+
+CREATE PROCEDURE [dbo].[SelectAll]
+AS
+	SELECT * from Products;
+RETURN 0
+
+
+=================================================================
+=============================Edit================================
+
+CREATE PROCEDURE [dbo].[Edit]
+	@ProductId int,
+	@ProductName varchar(50),
+	@Rate decimal(18,2),
+	@Description varchar(200),
+	@CategoryName varchar(50)
+
+AS
+	update  Products set ProductName=@ProductName,Rate=@Rate,Description=@Description,CategoryName=@CategoryName where ProductId=@ProductId
+RETURN 0
+
+=====================================================================
+
+=========================SelectById=================================
+CREATE PROCEDURE [dbo].[SelectById]
+	@ProductId int
+AS
+	SELECT 8 from Products where ProductId=@ProductId
+RETURN 0
+
+=============================================================

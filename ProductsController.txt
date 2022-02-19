@@ -1,0 +1,126 @@
+using MvcQue.Models;
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace MvcQue.Controllers
+{
+    public class ProductsController : Controller
+    {
+       //  Data Source = (localdb)\MSSQLLocalDB;Initial Catalog = ExamDataBase; Integrated Security = True; Connect Timeout = 30; Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False
+        // GET: Products
+        public ActionResult Index()
+        {
+            List<Product> prd = new List<Product>();
+            SqlConnection connnect = new SqlConnection();
+            connnect.ConnectionString = @"Data Source = (localdb)\MSSQLLocalDB;Initial Catalog = ExamDataBase; Integrated Security = True; Connect Timeout = 30";
+            connnect.Open();
+            SqlCommand insertCmd = new SqlCommand();
+            insertCmd.Connection = connnect;
+            insertCmd.CommandType = System.Data.CommandType.StoredProcedure;
+            insertCmd.CommandText = "SelectAll";
+            SqlDataReader sdreader=insertCmd.ExecuteReader();
+            while(sdreader.Read())
+            {
+                Product pr = new Product();
+                pr.ProductId = (int)sdreader["ProductId"];
+                pr.ProductName = (string)sdreader["ProductName"];
+                pr.Rate = (decimal)sdreader["Rate"];
+                pr.Description = (string)sdreader["Description"];
+                pr.CategoryName = (string)sdreader["CategoryName"];
+                prd.Add(pr);
+
+            }
+            return View(prd);
+        }
+
+       
+       
+
+        // GET: Products/Edit/5
+        public ActionResult Edit(int id)
+        {
+            ViewBag.Id = id;
+            return View();
+        }
+
+        // POST: Products/Edit/5
+        [HttpPost]
+        public ActionResult Edit(int id,Product po)
+        {
+            try
+            {
+                SqlConnection connnect = new SqlConnection();
+                connnect.ConnectionString = @"Data Source = (localdb)\MSSQLLocalDB;Initial Catalog = ExamDataBase; Integrated Security = True; Connect Timeout = 30";
+                connnect.Open();
+                SqlCommand insertCmd = new SqlCommand();
+                insertCmd.Connection = connnect;
+                insertCmd.CommandType = System.Data.CommandType.StoredProcedure;
+                insertCmd.CommandText = "Edit";
+                insertCmd.Parameters.AddWithValue("@ProductId", id);
+                insertCmd.Parameters.AddWithValue("@ProductName", po.ProductName);
+                insertCmd.Parameters.AddWithValue("@Rate", po.Rate);
+                insertCmd.Parameters.AddWithValue("@Description", po.Description);
+                insertCmd.Parameters.AddWithValue("@CategoryName", po.CategoryName);
+                insertCmd.ExecuteNonQuery();
+
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        // GET: Products/Delete/5
+        public ActionResult Delete(int id)
+        {
+            return View();
+        }
+        // GET: Products/Details/5
+        public ActionResult Details(int id)
+        {
+            return View();
+        }
+        [ChildActionOnly]
+        // GET: Products/Create
+        public ActionResult ForPartialView()
+        {
+            return View();
+        }
+        // POST: Products/Create
+        [HttpPost]
+        public ActionResult ForPartialVie(FormCollection collection)
+        {
+            try
+            {
+                // TODO: Add insert logic here
+
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        // POST: Products/Delete/5
+        [HttpPost]
+        public ActionResult Delete(int id, FormCollection collection)
+        {
+            try
+            {
+                // TODO: Add delete logic here
+
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View();
+            }
+        }
+    }
+}
